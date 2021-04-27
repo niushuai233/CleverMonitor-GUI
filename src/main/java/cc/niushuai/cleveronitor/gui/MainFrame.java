@@ -16,6 +16,8 @@ import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSONObject;
 
 import java.awt.*;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.swing.*;
@@ -40,6 +42,7 @@ public class MainFrame extends JFrame {
 
             Constants.MACHINE_SET = JSONObject.parseArray(res, Machine.class).stream().collect(Collectors.toSet());
 
+            initSelectData();
         } catch (Exception e) {
             e.printStackTrace();
             DialogUtil.showDialog("初始化设备信息失败, \nurl: " + url + "\nmsg: " + e.getMessage());
@@ -48,9 +51,15 @@ public class MainFrame extends JFrame {
 
     private void initData() {
 
+        initSelectData();
+    }
+
+    private void initSelectData() {
         Set<Machine> machineSet = Constants.MACHINE_SET;
         if (CollectionUtil.isNotEmpty(machineSet)) {
-            for (Machine machine : machineSet) {
+            comboBoxMachine.removeAllItems();
+            List<Machine> collect = machineSet.stream().collect(Collectors.toList()).stream().sorted(Comparator.comparingInt(Machine::getMachineStationId)).collect(Collectors.toList());
+            for (Machine machine : collect) {
                 comboBoxMachine.addItem(StrUtil.join("",
                         "ID: ",machine.getId(),
                         " Name: ", machine.getMachineNo(),
@@ -83,13 +92,22 @@ public class MainFrame extends JFrame {
         String url = StrUtil.join("", Constants.DEFAULT_URL_PREFIX, Constants.SEARCH_MACHINE_PARAM_VALUE, Constants.CURRENT_SELECT_ID);
         try {
             res = HttpUtil.get(url);
+            if (res.equals("{}")) {
+                DialogUtil.showDialog("未查询到相关数据");
+            }
         } catch (Exception exception) {
             exception.printStackTrace();
             DialogUtil.showDialog("请求失败, \nurl: " + url + "\nmsg: " + exception.getMessage());
             return;
         }
 
-        DataValue dv = JSONObject.parseObject(res, DataValue.class);
+        DataValue dv = null;
+        try {
+            dv = JSONObject.parseObject(res, DataValue.class);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            DialogUtil.showDialog("封装对象失败, \nurl: " + url + "\nmsg: " + exception.getMessage() + "\nres: " + res);
+        }
 
         setTextField(dv);
 
@@ -265,6 +283,8 @@ public class MainFrame extends JFrame {
         //---- textField0 ----
         textField0.setEditable(false);
         textField0.setEnabled(false);
+        textField0.setBackground(Color.BLACK);
+        textField0.setForeground(Color.WHITE);
         contentPane.add(textField0, new GridBagConstraints(2, 6, 1, 1, 0.0, 0.0,
             GridBagConstraints.CENTER, GridBagConstraints.BOTH,
             new Insets(0, 0, 0, 5), 0, 0));
@@ -278,6 +298,8 @@ public class MainFrame extends JFrame {
         //---- textField1 ----
         textField1.setEditable(false);
         textField1.setEnabled(false);
+        textField1.setBackground(Color.BLACK);
+        textField1.setForeground(Color.WHITE);
         contentPane.add(textField1, new GridBagConstraints(4, 6, 1, 1, 0.0, 0.0,
             GridBagConstraints.CENTER, GridBagConstraints.BOTH,
             new Insets(0, 0, 0, 5), 0, 0));
@@ -291,6 +313,8 @@ public class MainFrame extends JFrame {
         //---- textField2 ----
         textField2.setEditable(false);
         textField2.setEnabled(false);
+        textField2.setBackground(Color.BLACK);
+        textField2.setForeground(Color.WHITE);
         contentPane.add(textField2, new GridBagConstraints(6, 6, 1, 1, 0.0, 0.0,
             GridBagConstraints.CENTER, GridBagConstraints.BOTH,
             new Insets(0, 0, 0, 5), 0, 0));
@@ -304,6 +328,8 @@ public class MainFrame extends JFrame {
         //---- textField3 ----
         textField3.setEditable(false);
         textField3.setEnabled(false);
+        textField3.setBackground(Color.BLACK);
+        textField3.setForeground(Color.WHITE);
         contentPane.add(textField3, new GridBagConstraints(8, 6, 1, 1, 0.0, 0.0,
             GridBagConstraints.CENTER, GridBagConstraints.BOTH,
             new Insets(0, 0, 0, 5), 0, 0));
@@ -317,6 +343,8 @@ public class MainFrame extends JFrame {
         //---- textField4 ----
         textField4.setEditable(false);
         textField4.setEnabled(false);
+        textField4.setBackground(Color.BLACK);
+        textField4.setForeground(Color.WHITE);
         contentPane.add(textField4, new GridBagConstraints(10, 6, 1, 1, 0.0, 0.0,
             GridBagConstraints.CENTER, GridBagConstraints.BOTH,
             new Insets(0, 0, 0, 5), 0, 0));
@@ -330,7 +358,8 @@ public class MainFrame extends JFrame {
         //---- textField5 ----
         textField5.setEditable(false);
         textField5.setEnabled(false);
-        textField5.setBackground(new Color(242, 242, 242));
+        textField5.setBackground(Color.BLACK);
+        textField5.setForeground(Color.WHITE);
         contentPane.add(textField5, new GridBagConstraints(12, 6, 1, 1, 0.0, 0.0,
             GridBagConstraints.CENTER, GridBagConstraints.BOTH,
             new Insets(0, 0, 0, 5), 0, 0));
@@ -344,6 +373,8 @@ public class MainFrame extends JFrame {
         //---- textField6 ----
         textField6.setEditable(false);
         textField6.setEnabled(false);
+        textField6.setBackground(Color.BLACK);
+        textField6.setForeground(Color.WHITE);
         contentPane.add(textField6, new GridBagConstraints(2, 8, 1, 1, 0.0, 0.0,
             GridBagConstraints.CENTER, GridBagConstraints.BOTH,
             new Insets(0, 0, 0, 5), 0, 0));
@@ -357,6 +388,8 @@ public class MainFrame extends JFrame {
         //---- textField7 ----
         textField7.setEditable(false);
         textField7.setEnabled(false);
+        textField7.setBackground(Color.BLACK);
+        textField7.setForeground(Color.WHITE);
         contentPane.add(textField7, new GridBagConstraints(4, 8, 1, 1, 0.0, 0.0,
             GridBagConstraints.CENTER, GridBagConstraints.BOTH,
             new Insets(0, 0, 0, 5), 0, 0));
@@ -370,6 +403,8 @@ public class MainFrame extends JFrame {
         //---- textField8 ----
         textField8.setEditable(false);
         textField8.setEnabled(false);
+        textField8.setBackground(Color.BLACK);
+        textField8.setForeground(Color.WHITE);
         contentPane.add(textField8, new GridBagConstraints(6, 8, 1, 1, 0.0, 0.0,
             GridBagConstraints.CENTER, GridBagConstraints.BOTH,
             new Insets(0, 0, 0, 5), 0, 0));
@@ -383,6 +418,8 @@ public class MainFrame extends JFrame {
         //---- textField9 ----
         textField9.setEditable(false);
         textField9.setEnabled(false);
+        textField9.setBackground(Color.BLACK);
+        textField9.setForeground(Color.WHITE);
         contentPane.add(textField9, new GridBagConstraints(8, 8, 1, 1, 0.0, 0.0,
             GridBagConstraints.CENTER, GridBagConstraints.BOTH,
             new Insets(0, 0, 0, 5), 0, 0));
@@ -396,6 +433,8 @@ public class MainFrame extends JFrame {
         //---- textField10 ----
         textField10.setEditable(false);
         textField10.setEnabled(false);
+        textField10.setBackground(Color.BLACK);
+        textField10.setForeground(Color.WHITE);
         contentPane.add(textField10, new GridBagConstraints(10, 8, 1, 1, 0.0, 0.0,
             GridBagConstraints.CENTER, GridBagConstraints.BOTH,
             new Insets(0, 0, 0, 5), 0, 0));
@@ -409,6 +448,8 @@ public class MainFrame extends JFrame {
         //---- textField11 ----
         textField11.setEditable(false);
         textField11.setEnabled(false);
+        textField11.setBackground(Color.BLACK);
+        textField11.setForeground(Color.WHITE);
         contentPane.add(textField11, new GridBagConstraints(12, 8, 1, 1, 0.0, 0.0,
             GridBagConstraints.CENTER, GridBagConstraints.BOTH,
             new Insets(0, 0, 0, 5), 0, 0));
@@ -422,6 +463,8 @@ public class MainFrame extends JFrame {
         //---- textField12 ----
         textField12.setEditable(false);
         textField12.setEnabled(false);
+        textField12.setBackground(Color.BLACK);
+        textField12.setForeground(Color.WHITE);
         contentPane.add(textField12, new GridBagConstraints(2, 10, 1, 1, 0.0, 0.0,
             GridBagConstraints.CENTER, GridBagConstraints.BOTH,
             new Insets(0, 0, 0, 5), 0, 0));
@@ -435,6 +478,8 @@ public class MainFrame extends JFrame {
         //---- textField13 ----
         textField13.setEnabled(false);
         textField13.setEditable(false);
+        textField13.setBackground(Color.BLACK);
+        textField13.setForeground(Color.WHITE);
         contentPane.add(textField13, new GridBagConstraints(4, 10, 1, 1, 0.0, 0.0,
             GridBagConstraints.CENTER, GridBagConstraints.BOTH,
             new Insets(0, 0, 0, 5), 0, 0));
@@ -448,6 +493,8 @@ public class MainFrame extends JFrame {
         //---- textField14 ----
         textField14.setEditable(false);
         textField14.setEnabled(false);
+        textField14.setBackground(Color.BLACK);
+        textField14.setForeground(Color.WHITE);
         contentPane.add(textField14, new GridBagConstraints(6, 10, 1, 1, 0.0, 0.0,
             GridBagConstraints.CENTER, GridBagConstraints.BOTH,
             new Insets(0, 0, 0, 5), 0, 0));
@@ -461,6 +508,8 @@ public class MainFrame extends JFrame {
         //---- textField15 ----
         textField15.setEditable(false);
         textField15.setEnabled(false);
+        textField15.setBackground(Color.BLACK);
+        textField15.setForeground(Color.WHITE);
         contentPane.add(textField15, new GridBagConstraints(8, 10, 1, 1, 0.0, 0.0,
             GridBagConstraints.CENTER, GridBagConstraints.BOTH,
             new Insets(0, 0, 0, 5), 0, 0));
@@ -474,6 +523,8 @@ public class MainFrame extends JFrame {
         //---- textField16 ----
         textField16.setEditable(false);
         textField16.setEnabled(false);
+        textField16.setBackground(Color.BLACK);
+        textField16.setForeground(Color.WHITE);
         contentPane.add(textField16, new GridBagConstraints(10, 10, 1, 1, 0.0, 0.0,
             GridBagConstraints.CENTER, GridBagConstraints.BOTH,
             new Insets(0, 0, 0, 5), 0, 0));
@@ -487,6 +538,8 @@ public class MainFrame extends JFrame {
         //---- textField17 ----
         textField17.setEditable(false);
         textField17.setEnabled(false);
+        textField17.setBackground(Color.BLACK);
+        textField17.setForeground(Color.WHITE);
         contentPane.add(textField17, new GridBagConstraints(12, 10, 1, 1, 0.0, 0.0,
             GridBagConstraints.CENTER, GridBagConstraints.BOTH,
             new Insets(0, 0, 0, 5), 0, 0));
